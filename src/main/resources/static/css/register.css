@@ -13,7 +13,7 @@ body {
     background: url('/img/background.jpeg') no-repeat center center fixed;
     margin: 0;
     font-family: Arial, sans-serif;
-    
+    flex-direction:row;
 }
 body::before {
     content: "";
@@ -27,16 +27,17 @@ body::before {
 
     z-index: -1; 
 }
-
-
-.login-cont {
+.register-cont, .address-cont {
     background: #fff;
-    padding: 50px;
+    padding: 30px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    height: 400px;
+    margin-right: 20px;
 }
-h1 {
+
+h1, h2 {
     margin-bottom: 20px;
 }
 input {
@@ -48,7 +49,7 @@ input {
     border-radius: 4px;
     
 }
-button{
+button {
     padding: 10px 20px;
     background-color: #28a745;
     color: #fff;
@@ -56,7 +57,6 @@ button{
     border-radius: 4px;
     cursor: pointer;
 }
-
 button:hover {
     background-color: #218838;
 }

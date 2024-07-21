@@ -1,4 +1,4 @@
-package com.brand0nny.springboot.web.abarrotes_tepari.entities;
+package com.brand0nny.springboot.web.abarrotes_tepari.entities.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
