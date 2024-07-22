@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,60 +8,40 @@
 </head>
 <body>
 
-
     <div class="register-cont" id="registerCont">
         <h1>Register</h1>
-        <form th:action="@{/register}" th:object="${userReg}" method="post">
-        <div>
-            <input type="text" placeholder="Username" th:field="username">
+        <form id="user" th:action="@{/register}" th:object="${user}" method="post">
+            <div id="userFields">
+                <!-- User Details -->
+                <input type="hidden" id="id" name="id" th:value="${id}" />
 
-            <input type="text" placeholder="First name" th:field="firstname">
-            <input type="text" placeholder="Last name" th:field="lastname">
-      
-            <input type="text" placeholder="Email" th:field="email">
-            <input type="number" placeholder="Age" th:field="age">
-     
-            <input type="password" placeholder="Password" th:field="password">
-            <button onclick="location.href='/'">Back to login</button>
-            <button id="nextBtn">Next</button>
+                <input type="text" id="username" th:field="*{username}" placeholder="Username"/>
+                <div class="alert-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username Error</div>
 
+                <input type="text" id="firstname" th:field="*{firstname}" placeholder="First Name"/>
+                <div class="alert-error" th:if="${#fields.hasErrors('firstname')}" th:errors="*{firstname}">lastname Error</div>
+                
+                <input type="text" id="lastname" th:field="*{lastname}" placeholder="Last Name"/>
+                <div class="alert-error" th:if="${#fields.hasErrors('lastname')}" th:errors="*{lastname}">lastname Error</div>
+
+                <input type="email" id="email" th:field="*{email}" placeholder="Email"/>
+                <div class="alert-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</div>
+
+                <input type="number" id="age" th:field="*{age}" placeholder="Age"/>
+                <div class="alert-error" th:if="${#fields.hasErrors('age')}" th:errors="*{age}">age Error</div>
+
+                <input type="password" id="password" th:field="*{password}" placeholder="Password"/>
+                <div class="alert-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password Error</div>
+
+                <input type="password" id="confirmPassword" th:field="*{confirmPassword}" placeholder="Confirm Password"/>
+                <div class="alert-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">confirmPassword Error</div>
+
+                <button type="button" onclick="location.href='/'">Back to login</button>
+                <button type="submit" id="regUser" onclick="location.href='/add-address'">Create account</button>
+                <div class="alert alert-error" th:if="${formErrorMessage}" th:text="${formErrorMessage}"> Error message</div>
+            </div>
+        </form>
         </div>
-    </div>
-    
-    <div class="address-cont" id="addressCont" style="display: none;">
-        <h2>Address</h2>
-        <div>
-            <input type="text" placeholder="Street name" th:field="streetname">
-            <input type="number" placeholder="Number" th:field="number">
-       
-            <input type="number" placeholder="Postal code" th:field="postalCode">
-            <input type="text" placeholder="City" th:field="city">
-  
-            <input type="text" placeholder="State" th:field="state">
-            <input type="text" placeholder="Country" th:field="country">
-            <button id="backBtn">Back</button>
-            <button id="Register">Register</button>
-
-        </div>
-    </div>
-
-</form>
-<script type="text/javascript">
-
-    document.getElementById('nextBtn').addEventListener('click', function() {
-    document.getElementById('registerCont').style.display = 'none';
-    document.getElementById('addressCont').style.display = 'block';
-    });
-
-    document.getElementById('backBtn').addEventListener('click', function() {
-    document.getElementById('addressCont').style.display = 'none';
-    document.getElementById('registerCont').style.display = 'block';
-    });
-
-
-    </script>
-
-
 </body>
-</html>
 
+            

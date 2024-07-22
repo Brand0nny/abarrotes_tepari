@@ -1,9 +1,12 @@
 package com.brand0nny.springboot.web.abarrotes_tepari.entities.user;
 
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import com.brand0nny.springboot.web.abarrotes_tepari.entities.Product;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,8 +16,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "users")
 public class User {
@@ -23,19 +30,26 @@ public class User {
     @Column
     private Long id;
     @Column
+    @NotBlank
+    @Size(min=4, max=15)
     private String username;
     @Column
+    @NotBlank
     private String firstname;
     @Column
+    @NotBlank
     private String lastname;
     @Column
+    @NotNull
     private int age;
     @Column
+    @NotBlank
     private String email;
     @Column
+    @NotBlank
     private String password;
     @Transient
-    private String confirmPasword;
+    private String confirmPassword;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_product",
@@ -49,94 +63,140 @@ public class User {
     inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
     
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_address", 
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "address_id"))
-    private Set<Address> address;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Address> addresses = new HashSet<>();
 
     
     public User() {
     }
-    public User(String username, String firstname, String lastname, int age, String email, String password,
-            String confirmPasword, Set<Product> product, Set<Role> roles, Set<Address> address) {
+
+
+    public User(@NotBlank @Size(min = 4, max = 15) String username, @NotBlank String firstname,
+            @NotBlank String lastname, @NotNull int age, @NotBlank String email, @NotBlank String password,
+            String confirmPassword, Set<Product> product, Set<Role> roles, Set<Address> addresses) {
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
         this.age = age;
         this.email = email;
         this.password = password;
-        this.confirmPasword = confirmPasword;
+        this.confirmPassword = confirmPassword;
         this.product = product;
         this.roles = roles;
-        this.address = address;
+        this.addresses = addresses;
     }
+
+
     public Long getId() {
         return id;
     }
+
+
     public void setId(Long id) {
         this.id = id;
     }
+
+
     public String getUsername() {
         return username;
     }
+
+
     public void setUsername(String username) {
         this.username = username;
     }
+
+
     public String getFirstname() {
         return firstname;
     }
+
+
     public void setFirstname(String firstname) {
         this.firstname = firstname;
     }
+
+
     public String getLastname() {
         return lastname;
     }
+
+
     public void setLastname(String lastname) {
         this.lastname = lastname;
     }
+
+
     public int getAge() {
         return age;
     }
+
+
     public void setAge(int age) {
         this.age = age;
     }
+
+
     public String getEmail() {
         return email;
     }
+
+
     public void setEmail(String email) {
         this.email = email;
     }
+
+
     public String getPassword() {
         return password;
     }
+
+
     public void setPassword(String password) {
         this.password = password;
     }
-    public String getConfirmPasword() {
-        return confirmPasword;
+
+
+    public String getConfirmPassword() {
+        return confirmPassword;
     }
-    public void setConfirmPasword(String confirmPasword) {
-        this.confirmPasword = confirmPasword;
+
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
+
+
     public Set<Product> getProduct() {
         return product;
     }
+
+
     public void setProduct(Set<Product> product) {
         this.product = product;
     }
+
+
     public Set<Role> getRoles() {
         return roles;
     }
+
+
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
-    public Set<Address> getAddress() {
-        return address;
+
+
+    public Set<Address> getAddresses() {
+        return addresses;
     }
-    public void setAddress(Set<Address> address) {
-        this.address = address;
+
+
+    public void setAddresses(Set<Address> addresses) {
+        this.addresses = addresses;
     }
+
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -148,12 +208,14 @@ public class User {
         result = prime * result + age;
         result = prime * result + ((email == null) ? 0 : email.hashCode());
         result = prime * result + ((password == null) ? 0 : password.hashCode());
-        result = prime * result + ((confirmPasword == null) ? 0 : confirmPasword.hashCode());
+        result = prime * result + ((confirmPassword == null) ? 0 : confirmPassword.hashCode());
         result = prime * result + ((product == null) ? 0 : product.hashCode());
         result = prime * result + ((roles == null) ? 0 : roles.hashCode());
-        result = prime * result + ((address == null) ? 0 : address.hashCode());
+        result = prime * result + ((addresses == null) ? 0 : addresses.hashCode());
         return result;
     }
+
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -195,10 +257,10 @@ public class User {
                 return false;
         } else if (!password.equals(other.password))
             return false;
-        if (confirmPasword == null) {
-            if (other.confirmPasword != null)
+        if (confirmPassword == null) {
+            if (other.confirmPassword != null)
                 return false;
-        } else if (!confirmPasword.equals(other.confirmPasword))
+        } else if (!confirmPassword.equals(other.confirmPassword))
             return false;
         if (product == null) {
             if (other.product != null)
@@ -210,18 +272,21 @@ public class User {
                 return false;
         } else if (!roles.equals(other.roles))
             return false;
-        if (address == null) {
-            if (other.address != null)
+        if (addresses == null) {
+            if (other.addresses != null)
                 return false;
-        } else if (!address.equals(other.address))
+        } else if (!addresses.equals(other.addresses))
             return false;
         return true;
     }
+
+
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", firstname=" + firstname + ", lastname=" + lastname
-                + ", age=" + age + ", email=" + email + ", password=" + password + ", confirmPasword=" + confirmPasword
-                + ", product=" + product + ", roles=" + roles + ", address=" + address + "]";
+                + ", age=" + age + ", email=" + email + ", password=" + password + ", confirmPassword="
+                + confirmPassword + ", product=" + product + ", roles=" + roles + ", addresses=" + addresses + "]";
     }
+
 
 }

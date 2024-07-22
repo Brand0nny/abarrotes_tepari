@@ -13,6 +13,7 @@ body {
     background: url('/img/background.jpeg') no-repeat center center fixed;
     margin: 0;
     font-family: Arial, sans-serif;
+    flex-direction: column;
     
 }
 body::before {
@@ -29,13 +30,15 @@ body::before {
 }
 
 
-.login-cont {
+.login-cont{
     background: #fff;
     padding: 50px;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
+
+
 h1 {
     margin-bottom: 20px;
 }
@@ -52,11 +55,14 @@ button{
     padding: 10px 20px;
     background-color: #28a745;
     color: #fff;
-    border: none;
-    border-radius: 4px;
+    border-color: #f0f0f0;
+    border-radius: 5px;
+    border:solid;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 button:hover {
     background-color: #218838;
+   
 }

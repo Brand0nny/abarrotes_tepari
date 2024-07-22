@@ -24,7 +24,7 @@ public class WebSecurityConfig {
                         .disable())
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(resources).permitAll()
-                        .requestMatchers("/", "/login").permitAll()
+                        .requestMatchers("/", "/login","/register","/add-address","/add-address/**","/home","/home/**").permitAll()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")
