@@ -28,7 +28,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-
     @GetMapping({ "/login", "/" })
     public String login() {
 
@@ -45,24 +44,24 @@ public class UserController {
     public String postRegister(
             @Valid @ModelAttribute("user") User user,
             BindingResult result,
-            ModelMap model) throws Exception {
-
+            ModelMap model) {
         if (result.hasErrors()) {
             model.addAttribute("user", user);
+            return "register";
         }
 
         try {
             userService.createUser(user);
-            System.out.println("==============================================" + user);
         } catch (Exception e) {
-            System.out.println("============================================" + e.getMessage());
             model.addAttribute("formErrorMessage", e.getMessage());
             model.addAttribute("user", user);
-
+            return "register";
         }
 
-        return "register";
+        return "redirect:/login";
     }
+
+
 
     @GetMapping("/home")
     public String home() {
