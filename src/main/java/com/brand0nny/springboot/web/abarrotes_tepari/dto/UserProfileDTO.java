@@ -1,5 +1,9 @@
 package com.brand0nny.springboot.web.abarrotes_tepari.dto;
 
+import java.util.Set;
+
+import com.brand0nny.springboot.web.abarrotes_tepari.entities.user.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +19,6 @@ public class UserProfileDTO {
     String lastname;
     int age;
     String email;
+    Set<Role> role;
 
 }

@@ -32,7 +32,7 @@ public class ProductController {
     ProductService productService;
     @Autowired
     UserService userService;
-    @GetMapping(value="/")
+    @GetMapping({"/"})
     public ResponseEntity<Iterable<Product>> products(){
     return ResponseEntity.ok(productService.getAllProducts());
     }

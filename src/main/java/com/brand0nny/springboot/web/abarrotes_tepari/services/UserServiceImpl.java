@@ -2,11 +2,14 @@ package com.brand0nny.springboot.web.abarrotes_tepari.services;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,41 +30,62 @@ import jakarta.transaction.Transactional;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
-
+    
     @Autowired
     AddressRepository addressRepository;
-
+    
     @Autowired 
     ProductRepository productRepository;
     @Autowired
     RoleRepository roleRepository;
-
+    
+    
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Transactional
     
+    @Override
+    public User createUser(User user) {
+    User newUser = User.builder()
+    .username(user.getUsername())
+    .firstname(user.getFirstname())
+    .lastname(user.getLastname())
+    .email(user.getEmail())
+    .password(user.getPassword())
+    .age(user.getAge())
+    .build();
 
+    Optional<Role> roleReOptional = roleRepository.findByName("ROLE_USER");
+    Set<Role> roles = new HashSet<>();
+    roleReOptional.ifPresent(roles::add);
 
-  
+    user.setRoles(roles);
+    return userRepository.save(newUser);
+    
+    } 
 
+    @Override
+    public Iterable<User> getAllUsers() {
+        System.out.println(userRepository.findAll().toString());
+        return userRepository.findAll();
+    }
+    
     @Override
     public Optional<User> getUser(User user) throws Exception {
         return userRepository.findByUsername(user.getUsername());
     }
-
+    
     @Override
     public User getUserById(Long id) throws Exception {
-
+        
         return userRepository.findById(id).orElseThrow(() -> new Exception("Id not found"));
     }
 
-
-
+    
+    
     @Override
     public Optional<User> getUserByEmail(User user) throws Exception {
         return userRepository.findByEmail(user.getEmail());
-    
+        
     }
     @Override
     public boolean authenticateUser(User user) throws Exception {
@@ -71,8 +95,6 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
-
-
 
     @Override
     public Optional<User> findByUsername(String username) {
@@ -91,6 +113,8 @@ public class UserServiceImpl implements UserService {
         userDto.setLastname(user.getLastname());
         userDto.setEmail(user.getEmail());
         userDto.setAge(user.getAge());
+        userDto.setRole(user.getRoles());
+        System.out.println(userDto.toString());
         return Optional.of(userDto);
     }
     return Optional.empty();
@@ -122,6 +146,32 @@ public class UserServiceImpl implements UserService {
         return Optional.empty();
     }
 
+    @Override
+    public void deleteUserById(Long id) {
+       userRepository.deleteById(id);
+  
+    }
+
+    @Override
+    public User editUser(Long id, User editedUser) throws UsernameNotFoundException {
+        return userRepository.findById(id).map(
+            user -> { 
+            user.setUsername(editedUser.getUsername());
+            user.setFirstname(editedUser.getFirstname());
+            user.setLastname(editedUser.getLastname());
+            user.setEmail(editedUser.getEmail());
+            user.setAge(editedUser.getAge());
+            user.setPassword(editedUser.getPassword());
+            return userRepository.save(user);
+            }
+        ).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        
+        
+    }
+
+    }
+
+
    
-}
+
 

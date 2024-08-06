@@ -10,14 +10,10 @@ import javax.crypto.SecretKey;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.brand0nny.springboot.web.abarrotes_tepari.entities.user.User;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.Jwts.SIG;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
+
 
 @Service
 public class JwtService {
