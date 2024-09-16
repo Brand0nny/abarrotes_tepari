@@ -24,13 +24,16 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 @Entity
-@Table(name="products")
+@Table(name = "products")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,14 +48,15 @@ public class Product {
     private String date;
     @Column
     private String imageUrl;
-    @Transient
-    private Boolean isBuyed;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_products", 
-               joinColumns = @JoinColumn(name = "product_id"),
-               inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private Set<User> user;
+    @Column
+    private int availableQuantity;
 
- 
+
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    @EqualsAndHashCode.Exclude
+    private User seller;
 
 }

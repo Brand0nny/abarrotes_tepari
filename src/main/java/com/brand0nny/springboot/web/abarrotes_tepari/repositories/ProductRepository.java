@@ -13,9 +13,6 @@ import com.brand0nny.springboot.web.abarrotes_tepari.entities.Product;
 @Repository
 public interface ProductRepository extends CrudRepository<Product, Long>{
 
-    @Query("SELECT p.id FROM Product p JOIN p.user u WHERE u.id = :userId")
-    Optional<List<Long>> findProductIdsByUserId(@Param("userId") Long userId);
 
-    
 
 }

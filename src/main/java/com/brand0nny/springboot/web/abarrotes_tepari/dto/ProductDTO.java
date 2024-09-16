@@ -19,6 +19,8 @@ public class ProductDTO {
     double price;
     String date;
     String imageUrl;
+    int quantAvailable;
+    String seller;
     public ProductDTO(Product product) {
         this.id = product.getId();
         this.name = product.getName();
@@ -26,6 +28,7 @@ public class ProductDTO {
         this.price = product.getPrice();
         this.date = product.getDate();
         this.imageUrl = product.getImageUrl();
+        this.seller = product.getSeller().getUsername();
     }
 
 

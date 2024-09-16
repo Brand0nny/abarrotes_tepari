@@ -1,4 +1,4 @@
-package com.brand0nny.springboot.web.abarrotes_tepari.services;
+package com.brand0nny.springboot.web.abarrotes_tepari.services.implementation;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -17,9 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.brand0nny.springboot.web.abarrotes_tepari.dto.ProductDTO;
 import com.brand0nny.springboot.web.abarrotes_tepari.entities.Product;
+import com.brand0nny.springboot.web.abarrotes_tepari.entities.user.Purchase;
 import com.brand0nny.springboot.web.abarrotes_tepari.entities.user.User;
 import com.brand0nny.springboot.web.abarrotes_tepari.repositories.ProductRepository;
 import com.brand0nny.springboot.web.abarrotes_tepari.repositories.UserRepository;
+import com.brand0nny.springboot.web.abarrotes_tepari.services.ProductService;
 
 @Transactional
 @Service
@@ -34,21 +36,19 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll();
     }
 
-    
-
     @Override
     public Optional<ProductDTO> getProductDto(Long id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isPresent()) {
             ProductDTO productDTO = new ProductDTO();
             Product product = optionalProduct.get();
-            product.setIsBuyed(false);
             productDTO.setId(product.getId());
             productDTO.setName(product.getName());
             productDTO.setDescription(product.getDescription());
             productDTO.setPrice(product.getPrice());
             productDTO.setDate(product.getDate());
             productDTO.setImageUrl(product.getImageUrl());
+            productDTO.setSeller(product.getSeller().getUsername());
             return Optional.of(productDTO);
 
         }
@@ -60,25 +60,25 @@ public class ProductServiceImpl implements ProductService {
     public Product createProduct(Product product, String username) {
         Format formatter = new SimpleDateFormat("yyyy-MM-dd");
         String formattedDate = formatter.format(new Date());
-
-        Product newProduct = Product.builder()
-                .name(product.getName())
-                .description(product.getDescription())
-                .price(product.getPrice())
-                .date(formattedDate)
-                .imageUrl(product.getImageUrl())
-                .build();
-
-        Product savedProduct = productRepository.save(newProduct);
-
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            user.getProduct().add(savedProduct);
-            userRepository.save(user); 
-        }
+            Product newProduct = Product.builder()
+                    .name(product.getName())
+                    .description(product.getDescription())
+                    .price(product.getPrice())
+                    .date(formattedDate)
+                    .imageUrl(product.getImageUrl())
+                    .availableQuantity(product.getAvailableQuantity())
+                    .seller(user)
+                    .build();
+            Product savedProduct = productRepository.save(newProduct);
 
-        return savedProduct;
+            user.getProductsForSale().add(savedProduct);
+            userRepository.save(user);
+            return savedProduct;
+        }
+        throw new RuntimeException("user not found");
     }
 
     @Override
@@ -89,6 +89,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean deleteProductById(Long id) {
         Optional<Product> productOptional = productRepository.findById(id);
+
         if (productOptional.isPresent()) {
             productRepository.deleteById(id);
             return true;
@@ -96,12 +97,35 @@ public class ProductServiceImpl implements ProductService {
 
         return false;
     }
+
     @Override
     public Optional<List<Long>> getProductsFromUserById(Long id) {
-        
-        
 
-        return productRepository.findProductIdsByUserId(id);
+        return null;
+    }
+
+    @Override
+    public Set<Product> getAllProductsFromUserId(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            Set<Product> products = user.getProductsForSale();
+            return products;
+        }
+        throw new RuntimeException("ID does not exist");
+    }
+
+    @Override
+    public Set<Purchase> getAllBuyedProductsFromUserId(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            Set<Purchase> purchase = user.getPurchases();
+            return purchase;
+        }
+        throw new RuntimeException("ID does not exist");
+
     }
 
 }

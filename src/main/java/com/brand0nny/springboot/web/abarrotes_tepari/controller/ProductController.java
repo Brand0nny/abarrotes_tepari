@@ -42,10 +42,9 @@ public class ProductController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String username = userDetails.getUsername();
-        if(product.getIsBuyed().equals(false)){
 
             return new ResponseEntity<>(productService.createProduct(product, username), HttpStatus.CREATED);
-        } return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+       
     }
     @PostMapping("/delete-product/{id}")
     // @PreAuthorize("hasRole('ADMIN')")
@@ -65,6 +64,7 @@ public class ProductController {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
+  
 
 
 }

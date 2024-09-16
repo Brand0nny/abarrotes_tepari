@@ -1,4 +1,4 @@
-package com.brand0nny.springboot.web.abarrotes_tepari.services;
+package com.brand0nny.springboot.web.abarrotes_tepari.services.implementation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,6 +23,7 @@ import com.brand0nny.springboot.web.abarrotes_tepari.repositories.AddressReposit
 import com.brand0nny.springboot.web.abarrotes_tepari.repositories.ProductRepository;
 import com.brand0nny.springboot.web.abarrotes_tepari.repositories.RoleRepository;
 import com.brand0nny.springboot.web.abarrotes_tepari.repositories.UserRepository;
+import com.brand0nny.springboot.web.abarrotes_tepari.services.UserService;
 
 import jakarta.transaction.Transactional;
 @Transactional
@@ -123,16 +124,17 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public Optional<String> getOwnerOfProductById(Long id) {
-        Optional<Product> productOptional = productRepository.findById(id);
-        if(productOptional.isPresent()){
-            Product product = productOptional.get();
-            Set<User> user = product.getUser();
-            if(!user.isEmpty()){
-        return user.stream().findFirst().map(User::getUsername);    
-        }        
+    //     Optional<Product> productOptional = productRepository.findById(id);
+    //     if(productOptional.isPresent()){
+    //         Product product = productOptional.get();
+    //         User user = product.getSeller();
+    //         if(!user.isEmpty()){
+    //     return user.stream().findFirst().map(User::getUsername);    
+    //     }        
 
-    }
-    return Optional.empty();
+    // }
+    // return Optional.empty();
+    return null;
     }
 
     @Override

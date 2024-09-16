@@ -35,21 +35,26 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 @Entity
 @Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User implements UserDetails{
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
+    @EqualsAndHashCode.Include
     private Long id;
-    @Column(unique=true)
+    @Column(unique = true)
     @NotBlank
-    @Size(min=4, max=15)
+    @Size(min = 4, max = 15)
     private String username;
     @Column
     @NotBlank
@@ -60,7 +65,7 @@ public class User implements UserDetails{
     @Column
     @NotNull
     private int age;
-    @Column(unique=true)
+    @Column(unique = true)
     @NotBlank
     private String email;
     @Column
@@ -69,27 +74,23 @@ public class User implements UserDetails{
     private String password;
     // @Transient
     // private String confirmPassword;
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Product> productsForSale = new HashSet<>();
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Purchase> purchases = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_products", 
-               joinColumns = @JoinColumn(name = "user_id"),
-               inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private Set<Product> product;
 
+    ///
+  
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "user_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id"),
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role_id"})}
-    )
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"), uniqueConstraints = {
+            @UniqueConstraint(columnNames = { "user_id", "role_id" }) })
     private Set<Role> roles = new HashSet<>();
 
-
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_address", 
-               joinColumns = @JoinColumn(name = "user_id"),
-               inverseJoinColumns = @JoinColumn(name = "address_id"))
+    @JoinTable(name = "user_address", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "address_id"))
     private Set<Address> addresses;
 
     @Transient
@@ -97,8 +98,8 @@ public class User implements UserDetails{
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(role-> new SimpleGrantedAuthority(role.getName()))
-        .collect(Collectors.toList());
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -108,9 +109,8 @@ public class User implements UserDetails{
 
     @Override
     public String getUsername() {
-        
+
         return username;
     }
-    
-   
+
 }

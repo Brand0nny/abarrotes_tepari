@@ -1,4 +1,4 @@
-package com.brand0nny.springboot.web.abarrotes_tepari.services;
+package com.brand0nny.springboot.web.abarrotes_tepari.services.implementation;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +16,7 @@ import com.brand0nny.springboot.web.abarrotes_tepari.entities.user.Address;
 import com.brand0nny.springboot.web.abarrotes_tepari.entities.user.User;
 import com.brand0nny.springboot.web.abarrotes_tepari.repositories.AddressRepository;
 import com.brand0nny.springboot.web.abarrotes_tepari.repositories.UserRepository;
+import com.brand0nny.springboot.web.abarrotes_tepari.services.AddressService;
 @Transactional
 @Service
 public class AddressServiceImpl implements AddressService{

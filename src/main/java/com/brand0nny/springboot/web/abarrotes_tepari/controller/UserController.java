@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,7 @@ import com.brand0nny.springboot.web.abarrotes_tepari.dto.ProductDTO;
 import com.brand0nny.springboot.web.abarrotes_tepari.dto.UserProfileDTO;
 import com.brand0nny.springboot.web.abarrotes_tepari.entities.Product;
 import com.brand0nny.springboot.web.abarrotes_tepari.entities.user.Address;
+import com.brand0nny.springboot.web.abarrotes_tepari.entities.user.Purchase;
 import com.brand0nny.springboot.web.abarrotes_tepari.entities.user.User;
 import com.brand0nny.springboot.web.abarrotes_tepari.services.AddressService;
 import com.brand0nny.springboot.web.abarrotes_tepari.services.ProductService;
@@ -52,30 +54,52 @@ public class UserController {
     return userProfile.map(ResponseEntity::ok)
         .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
   }
-  @Transactional
-  @GetMapping("/my-products")
-  public ResponseEntity<List<ProductDTO>> myProducts() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-    String username = userDetails.getUsername();
+  // @Transactional
+  // @GetMapping("/my-products")
+  // public ResponseEntity<List<ProductDTO>> myProducts() {
+  //   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+  //   UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+  //   String username = userDetails.getUsername();
 
-    return userService.findByUsername(username)
-        .flatMap(u -> userService.findIdByUsername(username))
-        .flatMap(productService::getProductsFromUserById)
-        .map(productIds -> {
-          List<ProductDTO> productDTOs = productIds.stream()
-              .map(productService::getProductById)
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .map(Product::getId)
-              .map(productService::getProductDto)
-              .filter(Optional::isPresent)
-              .map(Optional::get)
-              .collect(Collectors.toList());
-          return ResponseEntity.ok(productDTOs);
-        }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+  //   return userService.findByUsername(username)
+  //       .flatMap(u -> userService.findIdByUsername(username))
+  //       .flatMap(productService::getProductsFromUserById)
+  //       .map(productIds -> {
+  //         List<ProductDTO> productDTOs = productIds.stream()
+  //             .map(productService::getProductById)
+  //             .filter(Optional::isPresent)
+  //             .map(Optional::get)
+  //             .map(Product::getId)
+  //             .map(productService::getProductDto)
+  //             .filter(Optional::isPresent)
+  //             .map(Optional::get)
+  //             .collect(Collectors.toList());
+  //         return ResponseEntity.ok(productDTOs);
+  //       }).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
 
  
+  // }
+  @GetMapping("/my-products-test")
+  public ResponseEntity<Set<Product>> myProductsBuyed(){
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails userDetails =(UserDetails) authentication.getPrincipal();
+    String username = userDetails.getUsername();
+
+   Long id = userService.findIdByUsername(username).get();
+
+   Set<Product> products = productService.getAllProductsFromUserId(id);
+    return ResponseEntity.ok(products);
+  }
+  @GetMapping("/my-purchases-test")
+  public ResponseEntity<Set<Purchase>> myPurchases(){
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    UserDetails userDetails =(UserDetails) authentication.getPrincipal();
+    String username = userDetails.getUsername();
+
+   Long id = userService.findIdByUsername(username).get();
+
+   Set<Purchase> purchases = productService.getAllBuyedProductsFromUserId(id);
+    return ResponseEntity.ok(purchases);
   }
 
   @PostMapping("/add-address")
@@ -103,7 +127,9 @@ public class UserController {
       .collect(Collectors.toList());
       return ResponseEntity.ok(addressStorage);
     }).orElseGet(()->ResponseEntity.status(HttpStatus.NOT_FOUND).build());
-    }
+ 
+
+  }
   
 
 
